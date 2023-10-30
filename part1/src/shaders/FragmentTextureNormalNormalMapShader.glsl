@@ -14,9 +14,9 @@ in vec3 viewDirectionOut;
 
 uniform sampler2D textureSampler;
 uniform sampler2D normalSampler;
-uniform vec3 lightColors[4];
-uniform vec3 lightsUniform[4];
-int lightCount = 4;
+uniform vec3 lightColors[34];
+uniform vec3 lightsUniform[34];
+int lightCount = 34;
 
 out vec4 color;
 
@@ -89,6 +89,7 @@ void main() {
 
     normalVector = normalize(normalVector * 2.0 - 1.0);
     normalVector = normalize(TBN * normalVector);
+    textureColor = vec4(1.0, 1.0, 1.0, 1.0);
 
     // calculate the lighting for all the lights
     color = vec4(lightsUniform[0], 1);

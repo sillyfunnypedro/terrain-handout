@@ -18,6 +18,19 @@ let frameNumber = 0;
 
 const sceneData = new SceneData();
 
+function linearLight(point1: number[], point2: number[], lights: number, color: number[]) {
+    let deltaX = (point2[0] - point1[0]) / (lights - 1);
+    let deltaY = (point2[1] - point1[1]) / (lights - 1);
+    let deltaZ = (point2[2] - point1[2]) / (lights - 1);
+
+    for (let i = 0; i <= lights; i++) {
+        let light = new GLPointLight([point1[0] + i * deltaX, point1[1] + i * deltaY, point1[2] + i * deltaZ], color);
+        sceneData.lights.addPointLight(light);
+    }
+
+}
+
+linearLight([-10, .5, -5], [10, .5, -5], 30, [1.0, 1.0, 1.0]);
 
 // lets add a red light to the scene
 sceneData.lights.addPointLight(new GLPointLight([5, 5, -5], [1.0, 1.0, 1.0]));
@@ -290,8 +303,8 @@ function setUpTexture(gl: WebGLRenderingContext,
     gl.bindTexture(gl.TEXTURE_2D, texture);
 
     // set the parameters for the texture
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
 
     // set the filtering for the texture
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -364,6 +377,23 @@ function setUpTextures(gl: WebGLRenderingContext,
         if (model.normalTexture === null) {
             throw new Error("Failed to set up normal texture, it was expected to be there but it was not");
         }
+        const uvOffsetLocation = gl.getUniformLocation(shaderProgram, 'uvOffset');
+
+        // get the now time
+        let now = performance.now();
+
+        const period = 25000;
+
+        now = now % period;
+
+        now = now / period * 2 * Math.PI;
+
+
+
+
+        const uvData = new Float32Array([Math.sin(now), 0]);
+        gl.uniform2fv(uvOffsetLocation, uvData);
+
 
     }
 
