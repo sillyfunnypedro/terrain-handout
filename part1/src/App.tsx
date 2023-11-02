@@ -9,13 +9,18 @@ import ModelGL from './ModelGL'
 import { updateSceneData, setupCanvas } from './glCanvas';
 import { loadAndCacheShaderSource } from './ShaderManager';
 import { loadAndCacheScenes, getSceneSource } from './SceneLoader';
+import PPMFileLoader from './PPMFileLoader';
+import PPM from './PPM';
 
 const objLoader = ObjFileLoader.getInstance();
 
 
 // Kick off the loading of the shader source and the scene source
 loadAndCacheShaderSource();
-loadAndCacheScenes();
+
+PPMFileLoader.getInstance().loadIntoCache('../textures/gradient.ppm');
+PPMFileLoader.getInstance().loadIntoCache('../textures/height.ppm');
+
 
 
 function App() {

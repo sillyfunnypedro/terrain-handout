@@ -9,6 +9,13 @@ import shaderSourceCodeMap from './ShaderManager';
 import SceneData from './SceneData';
 import { GLPointLight, GLLights } from './GLLights';
 
+import Terrain from './Terrain';
+
+
+
+const terrainGenerator = new Terrain();
+
+
 
 // measure the FPS
 let fps = 0;
@@ -433,11 +440,12 @@ function setUpVertexBuffer(gl: WebGLRenderingContext,
     gl.bufferData(gl.ARRAY_BUFFER, model.packedVertexBuffer, gl.STATIC_DRAW);
 
 
-
-    // create an index buffer
-    const indexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, model.vertexIndices, gl.STATIC_DRAW);
+    if (!model.modelRequiresTriangleStrip) {
+        // create an index buffer
+        const indexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, model.vertexIndices, gl.STATIC_DRAW);
+    }
 
     // ******************************************************
     // Now we need to figure out where the input data is going to go
@@ -597,6 +605,9 @@ function renderLoop(): void {
             const index = i * 3;
             gl.drawElements(gl.LINE_LOOP, 3, gl.UNSIGNED_SHORT, index * 2);
         }
+    } else if (model.modelRequiresTriangleStrip) {
+        gl.drawArrays(gl.TRIANGLE_STRIP,0, model.numVertices);
+
     } else {
         gl.drawElements(gl.TRIANGLES, model.vertexIndices.length, gl.UNSIGNED_SHORT, 0);
     }

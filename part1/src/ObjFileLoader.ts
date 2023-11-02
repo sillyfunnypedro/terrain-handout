@@ -4,6 +4,7 @@ import { objectFileMap } from './ObjectFileMap';
 import Material from './Material';
 import PPMFileLoader from './PPMFileLoader';
 import { ServerURLPrefix } from './ServerURL';
+import Terrain from './Terrain';
 
 /**
  * ObjFileLoader.ts
@@ -52,10 +53,25 @@ class ObjFileLoader {
      * @public
      * */
     public async getModel(object: string): Promise<ModelGL | undefined> {
+
+
         const objectFilePath = objectFileMap.get(object)!;
         if (this.modelCache.has(objectFilePath)) {
             console.log(`${objectFilePath} already loaded`);
             let model = this.modelCache.get(objectFilePath);
+            return model;
+        }
+
+        if (objectFilePath === "terrain") {
+            let model = new ModelGL();
+            model.terrainGenerator = new Terrain();
+            const file = PPMFileLoader.getInstance().loadFile("../textures/gradient.ppm");
+            if (!file) {
+                throw new Error("could not load file");
+            }
+            model.terrainGenerator?.setParameters(file!, 10, 10, 1, 1, 1);
+            model.generateTerrain();
+            this.modelCache.set(objectFilePath, model);
             return model;
         }
 

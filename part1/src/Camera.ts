@@ -37,7 +37,7 @@ class Camera {
         this.aspectRatio = 1;
         this.fieldOfView = 45;
         this.nearPlane = 0.1;
-        this.farPlane = 100;
+        this.farPlane = 1000;
         this.viewPortWidth = 1;
         this.viewPortHeight = 1;
         this.roll = 0;
@@ -51,7 +51,7 @@ class Camera {
         this.aspectRatio = 1;
         this.fieldOfView = 30;
         this.nearPlane = 0.1;
-        this.farPlane = 100;
+        this.farPlane = 1000;
         this.viewPortWidth = 1;
         this.viewPortHeight = 1;
         this.roll = 0;

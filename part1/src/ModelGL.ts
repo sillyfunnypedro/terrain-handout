@@ -1,5 +1,6 @@
 import Material from "./Material";
 import { mat4 } from "gl-matrix";
+import Terrain from "./Terrain";
 
 
 /**
@@ -22,6 +23,11 @@ class ModelGL {
     modelPath: string = '';
     shaderName: string = '';
 
+    terrainGenerator?: Terrain = undefined;
+    modelRequiresTriangleStrip: boolean = false;
+
+
+
 
 
     // the parameters for the model transformation
@@ -39,6 +45,30 @@ class ModelGL {
 
 
     renderingProgram: WebGLProgram | null = null;
+
+    generateTerrain(): void {
+        let requireTexture = false;
+        if (this.terrainGenerator === undefined) {
+            return;
+        }
+
+        // check to see if this.material is defined and if it has a texture
+
+        if (this.material !== undefined && this.material.map_Kd !== '') {
+            requireTexture = true;
+            this.textureOffset = 3 * Float32Array.BYTES_PER_ELEMENT;
+        }
+
+        this.packedVertexBuffer = this.terrainGenerator.getVertexData(requireTexture);
+        this.vertexIndices = this.terrainGenerator.getIndexData();
+        this.modelRequiresTriangleStrip = false;
+        this.numVertices = this.terrainGenerator.getNumVertices();
+        this.numTriangles = this.terrainGenerator.getNumTriangles();
+        this.vertexStride = this.terrainGenerator.getStride();
+        this.vertexOffset = 0;
+
+
+    }
 
 
     public get hasDiffuseMap(): boolean {

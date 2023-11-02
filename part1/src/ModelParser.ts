@@ -1,6 +1,8 @@
 import Material from "./Material";
 import { mat4 } from "gl-matrix";
 import ModelGL from "./ModelGL";
+import Terrain from "./Terrain";
+import PPMFileLoader from "./PPMFileLoader";
 
 /**
  *  @class VertexAccumulator
@@ -161,6 +163,8 @@ class ModelParser {
     }
 
 
+
+
     /**
      * The data that the CanvasGL renderer will use to set up the draw call(s) for the model
      */
@@ -217,7 +221,9 @@ class ModelParser {
             // strip off any leading white space
             line = line.trim();
             let tokens: string[] = line.split(" ");
-            if (tokens[0] === "v") {
+            if (tokens[0] === "terrain") {
+                this.processTerrain(modelGL, tokens);
+            } else if (tokens[0] === "v") {
                 this._vertices.push(parseFloat(tokens[1]));
                 this._vertices.push(parseFloat(tokens[2]));
                 this._vertices.push(parseFloat(tokens[3]));
@@ -359,6 +365,53 @@ class ModelParser {
         }
 
     }
+
+    /**
+     * 
+     * @param tokens 
+     * 
+     * terrain file width, depth, widthSegments, depthSegments, maxHeight
+     */
+    private processTerrain(modelGL: ModelGL, tokens: string[]) {
+        if (tokens.length < 7) {
+            throw new Error(`terrain must have a 6 parameters\nterrain width depth widthSegments depthSegments maxHeight [texture]`);
+        }
+
+        // get the path to the model file
+        const modelDirectory = modelGL.modelPath.substring(0, modelGL.modelPath.lastIndexOf('/'));
+        const heightmap = tokens[1];
+        const texturePath = modelDirectory + '/' + heightmap;
+
+
+        const width = parseFloat(tokens[2]);
+        const depth = parseFloat(tokens[3]);
+        const widthSegments = parseFloat(tokens[4]);
+        const depthSegments = parseFloat(tokens[5]);
+        const maxHeight = parseFloat(tokens[6]);
+
+        if (tokens.length === 8) {
+            const texture = tokens[7];
+            const material = new Material();
+            material.map_Kd = texture;
+            modelGL.material = material;
+            modelGL.textureOffset = 12;
+        }
+
+        const newTerrain = new Terrain();
+        modelGL.terrainGenerator = newTerrain;
+
+        // load the texture and have it call generate terrain when it is done
+        const loader = PPMFileLoader.getInstance().loadIntoCache(texturePath);
+        loader.then((ppm) => {
+            newTerrain.setParameters(ppm!, width, depth, widthSegments, depthSegments, maxHeight);
+            modelGL.generateTerrain();
+            console.log(heightmap, width, depth, widthSegments, depthSegments, maxHeight);
+        });
+
+
+    }
 }
+
+
 
 export default ModelParser;

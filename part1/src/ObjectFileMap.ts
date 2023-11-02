@@ -12,6 +12,13 @@ export const objectFileMap: Map<string, string> = new Map([
     ["lion", "lion/lion_centered_triangulated.obj"],
     ["lion-2%", "lion/lion_2_percent_of_triangles.obj"],
     ["capsule", "capsule/capsule.obj"],
+    ["terrain", "terrain_smooth/terrain.obj"],
+    ["terrain1x1", "terrain_one/terrain.obj"],
+    ["terrain1x1-tex", "terrain_one_textured/terrain.obj"],
+    ["terrain2x2", "terrain_two/terrain.obj"],
+    ["terrain_bumpy", "terrain_bumpy/terrain.obj"],
+    ["terrain_textured", "terrain_textured/terrain.obj"],
+
     //["clown_fish", "clown_fish/13008_Clown_Goby_Citrinis_v1_l3.obj"],
     // ["capsule", "capsule/capsule.obj"],
     // ["chapel", "chapel/chapel_obj.obj"],
