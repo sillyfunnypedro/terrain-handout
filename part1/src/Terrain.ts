@@ -45,24 +45,12 @@ class Terrain {
     getHeight(u: number, v: number): number {
 
         if (this._heightmap === undefined) {
-            return Math.sin(u * 2 * Math.PI) * Math.sin(v * 2 * Math.PI);
+            throw new Error("heightmap is undefined");
         }
 
-        const ppmWidth = this._heightmap.width;
-        const ppmHeight = this._heightmap.height;
-
-        let x = Math.floor(u * ppmWidth);
-        if (x === ppmWidth) {
-            x = ppmWidth - 1;
-        }
-        let y = Math.floor(v * ppmHeight);
-        if (y === ppmHeight) {
-            y = ppmHeight - 1;
-        }
-
-        let pixel = this._heightmap.getPixel(x, y); // we only use the red component
-
-        let height = pixel[0] / 255 * this._maxHeight;
+        // take the number u and v and generate the sample pixel of the image
+        // then use getPixel to get that data and use the red component to generate the height
+        const height = 0;
 
         return height;
     }
