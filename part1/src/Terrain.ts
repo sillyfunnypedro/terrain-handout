@@ -27,7 +27,9 @@ class Terrain {
         this._width = width;
         this._depth = depth;
         this._widthSegments = widthSegments;
+        this._widthSegments = 1;
         this._depthSegments = depthSegments;
+        this._depthSegments = 1;
         this._maxHeight = maxHeight;
     }
 
@@ -66,11 +68,13 @@ class Terrain {
     }
 
     getNumVertices(): number {
+
         return (this._widthSegments + 1) * (this._depthSegments + 1);
     }
 
     getNumTriangles(): number {
         return this._widthSegments * this._depthSegments * 2;
+
     }
 
     getStride(): number {
@@ -85,21 +89,24 @@ class Terrain {
     getIndexData(): Uint16Array {
         let indexData: number[] = [];
 
-        // generate the indices for the terrain
-        for (let z = 0; z < this._depthSegments; z++) {
-            for (let x = 0; x < this._widthSegments; x++) {
-                // we add two triangles per quad
-                // add the indexes for the first triangle
-                indexData.push(x + z * (this._widthSegments + 1));
-                indexData.push(x + (z + 1) * (this._widthSegments + 1));
-                indexData.push(x + 1 + (z + 1) * (this._widthSegments + 1));
-                // add the indexes for the second triangle
-                indexData.push(x + z * (this._widthSegments + 1));
-                indexData.push(x + 1 + (z + 1) * (this._widthSegments + 1));
-                indexData.push(x + 1 + z * (this._widthSegments + 1));
-            }
 
-        }
+        //create the index buffer for the terrain.... 
+        indexData.push(0);
+        indexData.push(1);
+        indexData.push(2);
+
+        indexData.push(2);
+        indexData.push(1);
+        indexData.push(3);
+        // generate the indices for the terrain
+        // for (let z = 0; z < this._depthSegments; z++) {
+        //     for (let x = 0; x < this._widthSegments; x++) {
+        // we add two triangles per quad
+        // add the indexes for the first triangle
+
+
+
+
 
         return new Uint16Array(indexData);
     }
@@ -108,38 +115,53 @@ class Terrain {
         const deltaX = this._width / this._widthSegments;
         const deltaZ = this._depth / this._depthSegments;
 
+        // for (let z = 0; z < this._depthSegments; z++) {
+        //     for (let x = 0; x < this._widthSegments; x++) {
+
         let vertexData: number[] = [];
         if (needTexture) {
             this._stride = 5;
         } else {
             this._stride = 3;
         }
-        for (let z = 0; z <= this._depthSegments; z++) {
-            for (let x = 0; x <= this._widthSegments; x++) {
-                // calculate the position of the vertex
-                const positionX = x * deltaX;
-                const positionZ = z * deltaZ;
-                const positionY = this.getHeight(x / this._widthSegments, z / this._depthSegments);
+        vertexData.push(0);
+        vertexData.push(0);
+        vertexData.push(0)
 
-                // add the position to the vertex data
-                vertexData.push(positionX);
-                vertexData.push(positionY);
-                vertexData.push(positionZ);
-
-                if (needTexture) {
-                    // add the texture coordinates to the vertex data
-                    vertexData.push(x / this._widthSegments);
-                    vertexData.push(z / this._depthSegments);
-                }
-
-                // // add the normal to the vertex data
-                // vertexData.push(0);
-                // vertexData.push(1);
-                // vertexData.push(0);
-
-
-            }
+        if (needTexture) {
+            vertexData.push(0);
+            vertexData.push(0);
         }
+
+        vertexData.push(0);
+        vertexData.push(0);
+        vertexData.push(this._depth);
+
+        if (needTexture) {
+            vertexData.push(0);
+            vertexData.push(1);
+        }
+
+
+
+        vertexData.push(this._width);
+        vertexData.push(0);
+        vertexData.push(0);
+
+        if (needTexture) {
+            vertexData.push(1);
+            vertexData.push(0);
+        }
+
+        vertexData.push(this._width);
+        vertexData.push(0);
+        vertexData.push(this._depth);
+
+        if (needTexture) {
+            vertexData.push(1);
+            vertexData.push(1);
+        }
+
 
 
         return new Float32Array(vertexData);
