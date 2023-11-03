@@ -18,6 +18,7 @@ export const objectFileMap: Map<string, string> = new Map([
     ["terrain2x2", "terrain_two/terrain.obj"],
     ["terrain_bumpy", "terrain_bumpy/terrain.obj"],
     ["terrain_textured", "terrain_textured/terrain.obj"],
+    ["terrain_mountain", "terrain_mountain/terrain.obj"],
 
     //["clown_fish", "clown_fish/13008_Clown_Goby_Citrinis_v1_l3.obj"],
     // ["capsule", "capsule/capsule.obj"],
